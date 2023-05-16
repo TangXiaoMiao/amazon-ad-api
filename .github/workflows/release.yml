@@ -1,0 +1,31 @@
+name: Publish package to GitHub Packages
+
+on:
+    # release:
+    #   types: [created]
+    push:
+        branches: [main]
+
+jobs:
+    build:
+        permissions:
+            contents: read
+            packages: write
+
+        name: Release Package
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16.18.0
+                  registry-url: 'https://npm.pkg.github.com'
+                  scope: '@tangxiaomiao'
+            - name: Release
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: npm publish
